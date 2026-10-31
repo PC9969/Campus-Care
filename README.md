@@ -1,132 +1,44 @@
-# Campus Maintenance System
+# CampusCare — Campus Maintenance System
 
-A centralized campus maintenance platform designed to streamline the reporting, prioritization, assignment, tracking, and resolution of campus maintenance issues.
+A responsive, plain HTML/CSS/JavaScript frontend for reporting and managing campus maintenance requests. It includes an overview dashboard, issue reporting form, searchable issue management list, and a staff work queue.
 
-## 📌 Overview
+## Run in VS Code
 
-Campus environments regularly face issues such as water leakage, electrical faults, damaged infrastructure, broken equipment, network problems, and sanitation-related issues.
+1. Unzip the project and open the `campus-maintenance-frontend` folder in VS Code (`File → Open Folder…`).
+2. Open `index.html` in a local web server. The easiest option is the **Live Server** extension: right-click `index.html` and choose **Open with Live Server**.
+3. Alternatively, use Python if installed: from the project folder run `python -m http.server 5500`, then visit `http://localhost:5500`.
 
-When these problems are reported through different channels such as calls, messages, or verbal communication, it becomes difficult to track complaints, prioritize urgent issues, assign the appropriate maintenance staff, and identify recurring problems.
+No build step, package install, or backend is required for the mock-data experience.
 
-The Campus Maintenance System aims to provide a single platform for managing the complete maintenance lifecycle.
+## Included screens and behavior
 
-## 🎯 Objectives
+- **Overview:** issue counts, activity chart, category breakdown, and recent reports.
+- **Report an issue:** validated issue form with category, priority, location, and description.
+- **Issue management:** searchable issue table with status/category filters and issue detail dialogs.
+- **Staff workspace:** active work queue, status updates, team summary, and CSV export.
+- **Mock data:** eight sample requests. New issues and status changes persist in browser `localStorage`.
+- **Spring Boot adapter:** centralized in `api.js`; the UI calls `CampusApi` rather than `fetch` directly.
 
-- Centralize all campus maintenance requests.
-- Prioritize issues based on severity, urgency, and impact.
-- Assign issues to the appropriate maintenance personnel or department.
-- Track issues from reporting to resolution.
-- Reduce response and resolution time.
-- Identify recurring maintenance problems.
-- Improve transparency and accountability.
-- Provide useful maintenance insights to administrators.
+## Connect a Spring Boot REST API
 
-## ✨ Planned Features
+1. Set `USE_MOCK_DATA` to `false` in `config.js`.
+2. Set `API_BASE_URL` to your backend origin and edit `ENDPOINTS` to match your controller routes.
+3. The starter adapter expects:
+   - `GET /issues` → JSON array of issue objects
+   - `POST /issues` → created issue JSON
+   - `PATCH /issues/{id}` → updated issue JSON
+   - `GET /issues/summary` → `{ open, inProgress, resolved, newThisWeek, avgResolution, weekly, categories }`
+   - `GET /staff` → JSON array such as `[{ "name": "Jordan Lee", "role": "Plumbing" }]`
+4. Issue objects use `id`, `title`, `category`, `priority`, `status`, `location`, `assignee`, `createdAt`, and `description`. Use `Open`, `In Progress`, and `Resolved` status values; `Low`, `Medium`, and `High` priorities.
+5. Enable CORS on Spring Boot for the local frontend origin. Adjust request/response mapping in `api.js` if your DTO shape differs.
 
-### 👤 Issue Reporting
-- Report maintenance problems through a centralized platform.
-- Add issue category, location, description, and images.
-- Track previously reported issues.
+If your API uses only `PUT` for status changes, change the `PATCH` request in `api.js` to `PUT`. Authentication can be added in the same adapter, for example through a shared authorization header.
 
-### 🎯 Priority Management
-- Classify issues based on severity and urgency.
-- Prioritize critical problems over routine requests.
-- Consider factors such as affected users and issue duration.
+## Project files
 
-### 🔧 Staff Assignment
-- Assign issues to the appropriate maintenance team.
-- Track assigned and pending tasks.
-- Monitor maintenance workload.
-
-### 📍 Issue Tracking
-- Track the complete issue lifecycle:
-  - Reported
-  - Categorized
-  - Prioritized
-  - Assigned
-  - In Progress
-  - Resolved
-  - Verified
-  - Closed
-
-### 📊 Maintenance Analytics
-- Monitor pending and resolved issues.
-- Analyze resolution times.
-- Identify frequently affected locations.
-- Detect recurring maintenance problems.
-
-## 👥 User Roles
-
-### Student / Staff
-- Report maintenance issues.
-- Upload supporting information.
-- Track issue status.
-- Provide feedback after resolution.
-
-### Administrator
-- Manage reported issues.
-- Prioritize and assign maintenance requests.
-- Monitor maintenance activities.
-- View analytics and recurring issues.
-
-### Maintenance Personnel
-- View assigned tasks.
-- Update issue status.
-- Add resolution details.
-- Mark tasks as completed.
-
-## 🛠️ Technology Stack
-
-### Backend
-- Java 25 (LTS)
-- Spring Boot 4.x
-- Spring Web
-- Spring Data JPA
-
-### Database
-- PostgreSQL
-
-### Frontend
-- HTML
-- CSS
-- JavaScript
-
-### Development Tools
-- Visual Studio Code
-- Maven
-- Git
-- GitHub
-- Postman
-
-### Deployment
-- Vercel — Frontend
-- Cloud-hosted Spring Boot backend
-- PostgreSQL — Database
-
-## 🏗️ High-Level Architecture
-
-```text
-                    Users
-                      │
-                      ▼
-              ┌───────────────┐
-              │   Frontend    │
-              │ HTML/CSS/JS   │
-              └───────┬───────┘
-                      │
-                   REST API
-                      │
-                      ▼
-              ┌───────────────┐
-              │ Spring Boot   │
-              │    Backend    │
-              └───────┬───────┘
-                      │
-              ┌───────┴───────┐
-              ▼               ▼
-        Business Logic   Authentication
-              │
-              ▼
-        ┌───────────────┐
-        │  PostgreSQL   │
-        └───────────────┘
+- `index.html` — page shell and asset loading
+- `styles.css` — responsive visual system
+- `app.js` — navigation, rendering, filtering, forms, queue actions, and export
+- `api.js` — mock/REST adapter boundary
+- `mock-data.js` — local sample records and persistence
+- `config.js` — API base URL, endpoint paths, and mode switch
