@@ -1,44 +1,89 @@
-# CampusCare — Campus Maintenance System
+# Campus Care — Campus Maintenance Management System
+**SRMIST, Delhi-NCR Campus**
 
-A responsive, plain HTML/CSS/JavaScript frontend for reporting and managing campus maintenance requests. It includes an overview dashboard, issue reporting form, searchable issue management list, and a staff work queue.
+A modern, institutional, role-aware HTML/CSS/JavaScript frontend portal for reporting, tracking, and managing campus maintenance requests across SRMIST, Delhi-NCR Campus.
 
-## Run in VS Code
+---
 
-1. Unzip the project and open the `campus-maintenance-frontend` folder in VS Code (`File → Open Folder…`).
-2. Open `index.html` in a local web server. The easiest option is the **Live Server** extension: right-click `index.html` and choose **Open with Live Server**.
-3. Alternatively, use Python if installed: from the project folder run `python -m http.server 5500`, then visit `http://localhost:5500`.
+## Key Features & Role-Based Workflows
 
-No build step, package install, or backend is required for the mock-data experience.
+### 1. Application Roles
+- **Student**:
+  - View Overview dashboard with real-time campus statistics and category breakdown
+  - Report an Issue with multi-format evidence upload (camera capture / gallery, <= 10 MB)
+  - View "Issue Reported" page containing strictly their own reported issues
+  - View their Student Profile (Branch, Registration number, personal ticket counts)
+- **Professor**:
+  - View Overview dashboard
+  - Report an Issue with evidence attachment
+  - View "Issue Reported" page containing strictly their own reported issues
+  - View their Faculty Profile (Department, Designation, Faculty ID, ticket counts)
+- **Maintenance Staff**:
+  - View Overview dashboard
+  - Report an Issue
+  - View all campus issues under "Issue Reported"
+  - Access Issue Management (advanced search, multi-filter triage by status, category, priority)
+  - Access Staff Workspace (active work queue with inline status updates, CSV export, and "All Staff" technician directory)
+  - View their Staff Profile (Specialized field/domain, assigned/solved ticket metrics)
+- **Admin**:
+  - Supported conceptually in frontend data model and routes
+  - Complete access to all sections
 
-## Included screens and behavior
+### 2. Available Routes
+- `/#login` — Institutional login portal with role selection, college email verification, and password toggle
+- `/#overview` (or `/#dashboard`) — Campus dashboard with dynamic category breakdown and recent issues
+- `/#report-issue` (or `/#report`) — Validated reporting form with evidence attachment (camera/gallery, <= 10 MB)
+- `/#issues-reported` — Dedicated role-aware tracking page for submitted requests
+- `/#issue-management` (or `/#issues`) — Maintenance staff ticket triage and assignment queue
+- `/#staff-workspace` (or `/#staff`) — Active technician queue, status updates, and "All Staff" campus coverage
+- `/#profile` — Role-aware user profile with quick demo account switching
 
-- **Overview:** issue counts, activity chart, category breakdown, and recent reports.
-- **Report an issue:** validated issue form with category, priority, location, and description.
-- **Issue management:** searchable issue table with status/category filters and issue detail dialogs.
-- **Staff workspace:** active work queue, status updates, team summary, and CSV export.
-- **Mock data:** eight sample requests. New issues and status changes persist in browser `localStorage`.
-- **Spring Boot adapter:** centralized in `api.js`; the UI calls `CampusApi` rather than `fetch` directly.
+---
 
-## Connect a Spring Boot REST API
+## Running the Application Locally
 
-1. Set `USE_MOCK_DATA` to `false` in `config.js`.
-2. Set `API_BASE_URL` to your backend origin and edit `ENDPOINTS` to match your controller routes.
-3. The starter adapter expects:
-   - `GET /issues` → JSON array of issue objects
-   - `POST /issues` → created issue JSON
-   - `PATCH /issues/{id}` → updated issue JSON
-   - `GET /issues/summary` → `{ open, inProgress, resolved, newThisWeek, avgResolution, weekly, categories }`
-   - `GET /staff` → JSON array such as `[{ "name": "Jordan Lee", "role": "Plumbing" }]`
-4. Issue objects use `id`, `title`, `category`, `priority`, `status`, `location`, `assignee`, `createdAt`, and `description`. Use `Open`, `In Progress`, and `Resolved` status values; `Low`, `Medium`, and `High` priorities.
-5. Enable CORS on Spring Boot for the local frontend origin. Adjust request/response mapping in `api.js` if your DTO shape differs.
+1. Open this directory in VS Code or any terminal.
+2. Serve `index.html` using any local HTTP server:
+   - **Python 3**:
+     ```bash
+     python -m http.server 5500
+     ```
+     Then open `http://localhost:5500` in your browser.
+   - **VS Code Live Server**: Right-click `index.html` and choose **Open with Live Server**.
+   - **Node.js `npx serve`**:
+     ```bash
+     npx serve .
+     ```
 
-If your API uses only `PUT` for status changes, change the `PATCH` request in `api.js` to `PUT`. Authentication can be added in the same adapter, for example through a shared authorization header.
+No build step, npm packages, or external database is required for the frontend demonstration.
 
-## Project files
+---
 
-- `index.html` — page shell and asset loading
-- `styles.css` — responsive visual system
-- `app.js` — navigation, rendering, filtering, forms, queue actions, and export
-- `api.js` — mock/REST adapter boundary
-- `mock-data.js` — local sample records and persistence
-- `config.js` — API base URL, endpoint paths, and mode switch
+## Centralized Mock Data & Sample Credentials
+
+All mock data is centralized in `mock-data.js` and persists across sessions via browser `localStorage`.
+
+### Sample Login Credentials
+| Role | Name | Email | Password |
+|---|---|---|---|
+| **Student** | Rahul Sharma | `rahul.s@srmist.edu.in` | `password123` |
+| **Professor** | Dr. Priya Nair | `priya.nair@srmist.edu.in` | `password123` |
+| **Maintenance Staff** | Amit Kumar | `amit.k@srmist.edu.in` | `password123` |
+
+Quick demo pills are also available directly on the login page and profile page for instant 1-click role testing.
+
+---
+
+## Connect to Spring Boot + PostgreSQL REST API Later
+
+1. Set `USE_MOCK_DATA: false` in `config.js`.
+2. Update `API_BASE_URL` in `config.js` to point to your Spring Boot server (e.g. `http://localhost:8080/api`).
+3. The UI interacts solely with `CampusApi` in `api.js`, which handles standard REST endpoints:
+   - `POST /api/auth/login` → `{ token, user }`
+   - `GET /api/users/me` → User profile object
+   - `GET /api/issues` → Array of issues
+   - `GET /api/issues/my` → Array of user's reported issues
+   - `POST /api/issues` → Created issue object
+   - `PATCH /api/issues/{id}` → Updated issue object
+   - `GET /api/issues/summary` → Dashboard statistics and category breakdown
+   - `GET /api/staff` → Array of maintenance technicians

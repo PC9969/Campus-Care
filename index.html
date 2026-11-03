@@ -3,36 +3,70 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f8fc">
-  <title>CampusCare — Maintenance</title>
+  <meta name="theme-color" content="#1e40af">
+  <title>Campus Care — Maintenance</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app-shell">
+  <div class="app-shell" id="app-shell">
+    <div class="sidebar-backdrop" id="sidebar-backdrop" aria-hidden="true"></div>
     <aside class="sidebar" id="sidebar">
-      <a class="brand" href="#dashboard" aria-label="CampusCare home"><span class="brand-mark">C</span><span>campus<span class="brand-light">care</span></span></a>
-      <div class="campus-picker"><span class="campus-icon">⌂</span><span><b>North Campus</b><small>Facilities portal</small></span><span class="chevron">⌄</span></div>
+      <a class="brand" href="#overview" aria-label="Campus Care home">
+        <span class="brand-mark">C</span>
+        <span>Campus <span class="brand-light">Care</span></span>
+      </a>
+      <div class="campus-picker">
+        <span class="campus-icon">🏛</span>
+        <span>
+          <b>SRMIST, Delhi-NCR Campus</b>
+          <small>Campus Maintenance Portal</small>
+        </span>
+      </div>
       <div class="nav-label">WORKSPACE</div>
-      <nav class="main-nav" aria-label="Main navigation">
-        <a href="#dashboard" data-page="dashboard" class="nav-link active"><span class="nav-icon">▦</span>Overview</a>
-        <a href="#report" data-page="report" class="nav-link"><span class="nav-icon">＋</span>Report an issue</a>
-        <a href="#issues" data-page="issues" class="nav-link"><span class="nav-icon">☷</span>Issue management<span class="nav-count" id="nav-open-count">0</span></a>
-        <a href="#staff" data-page="staff" class="nav-link"><span class="nav-icon">♧</span>Staff workspace</a>
+      <nav class="main-nav" id="main-nav" aria-label="Main navigation">
+        <!-- Rendered dynamically by app.js based on role -->
       </nav>
       <div class="sidebar-bottom">
-        <div class="help-card"><span class="help-bubble">?</span><b>Need a hand?</b><p>Our facilities team is here to help.</p><a href="mailto:facilities@northcampus.edu">Contact support <span>↗</span></a></div>
-        <button class="profile-button"><span class="avatar avatar-navy">AM</span><span><b>Alex Morgan</b><small>Campus coordinator</small></span><span class="more">•••</span></button>
+        <div class="help-card">
+          <span class="help-bubble">?</span>
+          <b>Need assistance?</b>
+          <p>Our campus maintenance team is on standby to help.</p>
+          <a href="mailto:facilities@srmist.edu.in">Contact support <span>↗</span></a>
+        </div>
+        <button class="profile-button" id="sidebar-profile-btn" aria-label="View user profile">
+          <span class="avatar avatar-navy" id="sidebar-user-avatar">RS</span>
+          <span class="profile-info">
+            <b id="sidebar-user-name">Rahul Sharma</b>
+            <small id="sidebar-user-role">Student</small>
+          </span>
+          <span class="logout-icon" id="sidebar-logout-btn" title="Sign out" aria-label="Sign out">⎋</span>
+        </button>
       </div>
     </aside>
-    <main class="main-area">
-      <header class="topbar"><button class="mobile-menu" id="mobile-menu" aria-label="Open navigation">☰</button><div class="breadcrumbs"><span>North Campus</span><span class="crumb-slash">/</span><b id="topbar-title">Overview</b></div><div class="top-actions"><span class="today-label" id="today-label"></span><button class="icon-button" aria-label="Notifications">♧<i></i></button><span class="avatar avatar-blue">AM</span></div></header>
+    <main class="main-area" id="main-area">
+      <header class="topbar" id="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu" id="mobile-menu" aria-label="Open navigation">☰</button>
+          <div class="breadcrumbs">
+            <span>SRMIST, Delhi-NCR Campus</span>
+            <span class="crumb-slash">/</span>
+            <b id="topbar-title">Overview</b>
+          </div>
+        </div>
+        <div class="top-actions">
+          <span class="today-label" id="today-label"></span>
+          <span class="role-pill" id="topbar-role-badge">Student</span>
+          <a href="#profile" class="avatar avatar-blue" id="topbar-user-avatar" title="My Profile" aria-label="My Profile">RS</a>
+        </div>
+      </header>
       <div class="content" id="app-content" aria-live="polite"></div>
     </main>
   </div>
   <div class="toast-region" id="toast-region" aria-live="polite"></div>
+
   <script src="config.js"></script>
   <script src="mock-data.js"></script>
   <script src="api.js"></script>

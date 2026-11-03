@@ -1,10 +1,17 @@
-/* Switch USE_MOCK_DATA to false after configuring your Spring Boot API. */
+/* Configuration for Campus Care frontend.
+ * Switch USE_MOCK_DATA to false after connecting your Spring Boot + PostgreSQL backend.
+ */
 window.CAMPUS_CONFIG = {
-  USE_MOCK_DATA: true,
+  USE_MOCK_DATA: false,
   API_BASE_URL: "http://localhost:8080/api",
   ENDPOINTS: {
+    auth: "/auth/login",
+    currentUser: "/users/me",
     issues: "/issues",
+    myIssues: "/issues/my",
     summary: "/issues/summary",
-    staff: "/staff"
+    categories: "/issues/categories",
+    staff: "/staff",
+    assignments: "/assignments"
   }
 };
