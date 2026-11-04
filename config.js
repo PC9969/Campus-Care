@@ -3,7 +3,7 @@
  */
 window.CAMPUS_CONFIG = {
   USE_MOCK_DATA: false,
-  API_BASE_URL: "http://localhost:8080/api",
+  API_BASE_URL: "https://campus-care-5jev.onrender.com/api",
   ENDPOINTS: {
     auth: "/auth/login",
     currentUser: "/users/me",
